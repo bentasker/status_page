@@ -34,7 +34,7 @@ jobs:
         if: ${{ success() }}
         uses: EndBug/add-and-commit@v9
         with:
-            add: "html/output.json"
+            add: "output.json"
             pull: "--rebase --autostash ."
             message: "chore(generated): update stats"
             push: true

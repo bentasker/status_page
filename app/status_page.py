@@ -184,7 +184,7 @@ def main():
     json_op = json.dumps(resp_object)
     logger.info(json_op)
 
-    fh = open("html/output.json", "w")
+    fh = open("output.json", "w")
     fh.write(json_op)
     fh.close()
 
