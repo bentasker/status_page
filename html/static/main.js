@@ -37,9 +37,9 @@ function updateResponseTimePlot(data){
 
     odata = []
     for ([region, val] of Object.entries(regions)){
-        odata.push(regions[val]);
+        odata.push(val);
     }
-
+    console.log(odata)
     Plotly.newPlot('response_times', odata)
 }
 
