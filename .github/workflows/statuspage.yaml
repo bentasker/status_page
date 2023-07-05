@@ -34,7 +34,7 @@ jobs:
         if: ${{ success() }}
         uses: EndBug/add-and-commit@v9
         with:
-            add: "html/stats.json"
+            add: "html/output.json"
             pull: "--rebase --autostash ."
             message: "chore(generated): update generated csv automatically"
             default_author: github_actions
