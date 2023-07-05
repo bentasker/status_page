@@ -6,7 +6,8 @@ function fetchData(){
         if (this.readyState == 4 && this.status == 200) {
             var data = JSON.parse(this.responseText);
             console.log(data);
-            updateResponseTimePlot(data['edge_response_times']);
+            updateResponseTimePlot(data['edge_response_times'], 'response_times');
+            updateResponseTimePlot(data['origin_response_times'], 'origin_response_times');
         }
     };
 
@@ -15,7 +16,7 @@ function fetchData(){
 }
 
 
-function updateResponseTimePlot(data){
+function updateResponseTimePlot(data, dest){
     regions = {}
 
     data.forEach(function(val){
@@ -40,7 +41,7 @@ function updateResponseTimePlot(data){
         odata.push(val);
     }
     console.log(odata)
-    Plotly.newPlot('response_times', odata)
+    Plotly.newPlot(dest, odata)
 }
 
 fetchData()
