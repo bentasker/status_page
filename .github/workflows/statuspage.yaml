@@ -18,7 +18,7 @@ jobs:
 
       - name: Python dependencies
         run: |
-          pip install -U prefect==2.*
+          pip install -U prefect==2.* influxdb-client
 
       - name: Prefect Cloud login
         run: |
@@ -28,7 +28,7 @@ jobs:
       - name: healthcheck
         run: |
           export PYTHONPATH="${PYTHONPATH}"
-          python app/status_page.py
+          python app/status_page.py "${{secrets.INFLUXDB_TOKEN}}"
 
       - name: commit files
         if: ${{ success() }}
@@ -38,4 +38,3 @@ jobs:
             pull: "--rebase --autostash ."
             message: "chore(generated): update generated csv automatically"
             default_author: github_actions
-
