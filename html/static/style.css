@@ -1,0 +1,13 @@
+body {max-width: 80%; margin: auto; color: #fff; background-color: #000}
+
+#edgestatus, #originstatus {font-weight: bolder; font-size: 1.6em;}
+
+
+.state-up {color: green}
+.state-mostlyup {color: lightgreen}
+.state-degraded {color: orange}
+.state-down {color: red}
+
+h3 {
+  margin-top: 40px;
+}

@@ -1,6 +1,16 @@
 // Main
 
 function fetchData(){
+
+
+    class_map = {
+            "Up" : "state-up",
+            "Mostly Up" : "state-mostlyup",
+            "Degraded": "state-degraded",
+            "Down": "state-down"
+    }
+
+
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
@@ -11,8 +21,13 @@ function fetchData(){
             updateResponsesTables(data['edge_responses_by_region'], 'edge_response_by_region')
             updateResponsesTables(data['origin_responses_by_region'], 'origin_response_by_region')
 
-            document.getElementById('edgestatus').innerText = data['edge_status'];
-            document.getElementById('originstatus').innerText = data['origin_status'];
+            var es = document.getElementById('edgestatus')
+            es.innerText = data['edge_status'];
+            es.className = class_map[data['edge_status']];
+
+            var os = document.getElementById('originstatus')
+            os.innerText = data['origin_status'];
+            os.className = class_map[data['origin_status']];
         }
     };
 
