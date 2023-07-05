@@ -8,6 +8,9 @@ function fetchData(){
             console.log(data);
             updateResponseTimePlot(data['edge_response_times'], 'response_times');
             updateResponseTimePlot(data['origin_response_times'], 'origin_response_times');
+            updateResponsesTables(data['edge_responses_by_region'], 'edge_response_by_region')
+            updateResponsesTables(data['origin_responses_by_region'], 'origin_response_by_region')
+
             document.getElementById('edgestatus').innerText = data['edge_status'];
             document.getElementById('originstatus').innerText = data['origin_status'];
         }
@@ -44,6 +47,51 @@ function updateResponseTimePlot(data, dest){
     }
     console.log(odata)
     Plotly.newPlot(dest, odata)
+}
+
+
+function updateResponsesTables(data, dest){
+    // Plotly works in columns, define a list for each
+    regions = []
+    mins = []
+    maxs = []
+    means = []
+    perc = []
+
+    for (var i=0; i<data.length; i++){
+        console.log(data[i])
+        regions.push(data[i].region);
+        mins.push(data[i].min.toFixed(2));
+        maxs.push(data[i].max.toFixed(2));
+        means.push(data[i].mean.toFixed(2));
+        perc.push(data[i].p95.toFixed(2));
+    }
+
+
+    var dataopts = [{
+        type: 'table',
+        header : {
+            values: [
+                ["<b>Region</b>"],
+                ["<b>Min (ms)</b>"],
+                ["<b>Max (ms)</b>"],
+                ["<b>Mean (ms)</b>"],
+                ["<b>P95 (ms)</b>"]
+            ],
+            align: "center",
+            line: {width: 1},
+            fill: {color: "grey"},
+            font: {family: "Arial", size: 12, color: "white"}
+        },
+        cells: {
+            values: [regions, mins, maxs, means, perc],
+            align: "center",
+            line: {color: "black", width: 1},
+            font: {family: "Arial", size: 11, color: ["black"]}
+        }
+    }]
+
+    Plotly.newPlot(dest, dataopts);
 }
 
 fetchData()
