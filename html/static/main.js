@@ -8,6 +8,8 @@ function fetchData(){
             console.log(data);
             updateResponseTimePlot(data['edge_response_times'], 'response_times');
             updateResponseTimePlot(data['origin_response_times'], 'origin_response_times');
+            document.getElementById('edgestatus').innerText = data['edge_status'];
+            document.getElementById('originstatus').innerText = data['origin_status'];
         }
     };
 
