@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 '''
-pip install plotly pandas influxdb-client prefect
+pip install influxdb-client prefect
 '''
 import json
 import sys
@@ -184,7 +184,7 @@ def main():
     json_op = json.dumps(resp_object)
     logger.info(json_op)
 
-    fh = open("stats.json", "w")
+    fh = open("html/output.json", "w")
     fh.write(json_op)
     fh.close()
 

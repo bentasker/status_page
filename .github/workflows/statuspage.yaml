@@ -36,5 +36,6 @@ jobs:
         with:
             add: "html/output.json"
             pull: "--rebase --autostash ."
-            message: "chore(generated): update generated csv automatically"
+            message: "chore(generated): update stats"
+            push: true
             default_author: github_actions
