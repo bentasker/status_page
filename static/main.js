@@ -134,6 +134,7 @@ function updateServicesTable(services, class_map){
         
         td = document.createElement('td')
         td.className = class_map[services[i][1]];
+        td.innerText = services[i][1];
         tr.appendChild(td)
         
         t.appendChild(tr);
