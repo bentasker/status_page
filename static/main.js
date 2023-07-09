@@ -16,6 +16,8 @@ function fetchData(){
         if (this.readyState == 4 && this.status == 200) {
             var data = JSON.parse(this.responseText);
             console.log(data);
+            
+            updateServicesTable(data['services'], class_map)
             updateResponseTimePlot(data['edge_response_times'], 'response_times');
             updateResponseTimePlot(data['origin_response_times'], 'origin_response_times');
             updateResponsesTables(data['edge_responses_by_region'], 'edge_response_by_region')
@@ -108,5 +110,37 @@ function updateResponsesTables(data, dest){
 
     Plotly.newPlot(dest, dataopts);
 }
+
+function updateServicesTable(services, class_map){
+    
+    ele = document.getElementById('servicestatuses');
+    ele.innerHTML = ''
+    
+    t = document.createElement('table')
+    tr = document.createElement('tr')
+    th = document.createElement('th')
+    th.innerText = "Service"
+    tr.appendChild(th)
+    th = document.createElement('th')
+    th.innerText = "Status"
+    tr.appendChild(th)
+    t.appendChild(tr)
+    
+    for (var i=0; i<services.length; i++){
+        tr = document.createElement('tr')
+        td = document.createElement('td')
+        td.innerText = services[i][0];
+        tr.appendChild(td)
+        
+        td = document.createElement('td')
+        td.className = class_map[services[i][1]];
+        tr.appendChild(td)
+        
+        t.appendChild(tr);
+    }
+    
+    ele.appendChild(t);
+}
+
 
 fetchData()
