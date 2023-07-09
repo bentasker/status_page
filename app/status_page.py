@@ -13,8 +13,39 @@ from influxdb_client.client.warnings import MissingPivotFunction
 from prefect import flow, task, get_run_logger
 
 
+@task(retries=3, retry_delay_seconds=1)
+def get_probe_status(query_api, url):
+    ''' Run a flux query and get the probe status recorded by
+    the checks at https://github.com/bentasker/python_status_checker
+    '''
+    
+    # Default result
+    state = "Unknown"
 
+    logger = get_run_logger()
+    query = f'''
+        from(bucket: "Systemstats")
+        |> range(start: -30m)
+        |> filter(fn: (r) => r._measurement == "http_reachability_check")
+        |> filter(fn: (r) => r["_field"] == "probe_status")
+        |> filter(fn: (r) => r["url"] == "{url}")
+        |> group()
+        |> mean()    
+    '''
+    tables = query_api.query(query)
+    for table in tables:
+        for row in table.records:
+            if row.values['_value'] == 1:
+                state = "Up"
+            elif row.values['_value'] < 1 and row.values['_value'] > 0.75:
+                state = "Mostly Up"
+            elif row.values['_value'] < 0.75 and row.values['_value'] > 0.5:
+                state = "Degraded"
+            else:
+                state = "Down"
 
+    logger.info(f"{url} has probestate {state}")
+    return state    
 
 @task(retries=3, retry_delay_seconds=1)
 def get_service_status(query_api, url):
@@ -163,6 +194,12 @@ def main():
     edge_url = "https://www.bentasker.co.uk"
     origin_url = "https://mailarchives.bentasker.co.uk/gone.html"
 
+    # Services are displayed in a table, showing current status
+    services = [
+        "https://www.bentasker.co.uk/",
+        "https://mastodon.bentasker.co.uk/"
+        ]
+
     logger = get_run_logger()
 
     # Stand up the client
@@ -180,6 +217,17 @@ def main():
 
     resp_object["edge_responses_by_region"] = get_response_times_by_region(query_api, "https://www.bentasker.co.uk")
     resp_object["origin_responses_by_region"] = get_response_times_by_region(query_api, "https://mailarchives.bentasker.co.uk/gone.html")
+
+
+    # Check on individual services
+    service_statuses = []
+    for service in services:
+        service_statuses.append([
+            service,
+            get_probe_status(query_api, service)
+        ])
+
+    resp_object['services'] = service_statuses
 
     json_op = json.dumps(resp_object)
     logger.info(json_op)
