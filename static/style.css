@@ -11,3 +11,6 @@ body {max-width: 80%; margin: auto; color: #fff; background-color: #000}
 h3 {
   margin-top: 40px;
 }
+
+#servicestatuses th {text-align: left}
+#servicestatuses table {width: 50%}
