@@ -29,6 +29,7 @@ def get_probe_status(query_api, url):
         |> filter(fn: (r) => r._measurement == "http_reachability_check")
         |> filter(fn: (r) => r["_field"] == "probe_status")
         |> filter(fn: (r) => r["url"] == "{url}")
+        |> map(fn: (r) => ({r with _value: float(v: r._value)}))
         |> group()
         |> mean()    
     '''
@@ -62,6 +63,7 @@ def get_service_status(query_api, url):
         |> filter(fn: (r) => r["_field"] == "response_status_code_match")
         |> filter(fn: (r) => r["server"] == "{url}")
         |> last()
+        |> map(fn: (r) => ({r with _value: float(v: r._value)}))
         |> group()
         |> mean()
     '''
