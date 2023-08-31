@@ -3,6 +3,7 @@
 '''
 pip install influxdb-client prefect
 '''
+import logging
 import json
 import sys
 
@@ -10,10 +11,10 @@ import warnings
 
 from influxdb_client import InfluxDBClient
 from influxdb_client.client.warnings import MissingPivotFunction
-from prefect import flow, task, get_run_logger
+#from prefect import flow, task, get_run_logger
 
 
-@task(retries=3, retry_delay_seconds=1)
+#@task(retries=3, retry_delay_seconds=1)
 def get_probe_status(query_api, url):
     ''' Run a flux query and get the probe status recorded by
     the checks at https://github.com/bentasker/python_status_checker
@@ -48,7 +49,7 @@ def get_probe_status(query_api, url):
     logger.info(f"{url} has probestate {state}")
     return state    
 
-@task(retries=3, retry_delay_seconds=1)
+#@task(retries=3, retry_delay_seconds=1)
 def get_service_status(query_api, url):
     ''' Run a flux query and calculate a textual description of service status
     '''
@@ -83,7 +84,7 @@ def get_service_status(query_api, url):
     logger.info(f"{url} is {state}")
     return state
 
-@task(retries=3, retry_delay_seconds=1)
+#@task(retries=3, retry_delay_seconds=1)
 def get_response_times_by_region(query_api, url):
     logger = get_run_logger()
 
@@ -153,7 +154,7 @@ def get_response_times_by_region(query_api, url):
     return response_times
 
 
-@task(retries=3, retry_delay_seconds=2)
+#@task(retries=3, retry_delay_seconds=2)
 def get_response_times(query_api, url):
     logger = get_run_logger()
     query = f'''
@@ -189,7 +190,7 @@ def get_response_times(query_api, url):
 
 
 
-@flow(retries=3, retry_delay_seconds=10)
+#@flow(retries=3, retry_delay_seconds=10)
 def main():
     # TODO: replace with secret storage
     token = sys.argv[1]
@@ -239,6 +240,8 @@ def main():
     fh.close()
 
 
+def get_run_logger():
+    return logging
 
 
 if __name__ == "__main__":
